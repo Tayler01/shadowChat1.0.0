@@ -23,3 +23,19 @@ npm run build
 
 After building, the Express server can serve the compiled files from the `dist` directory.
 
+## Database configuration
+
+The server uses [Supabase](https://supabase.com) for persistent storage. Copy `.env.example` to `.env` and provide your project credentials:
+
+```
+SUPABASE_URL=<your-supabase-url>
+SUPABASE_ANON_KEY=<your-anon-key>
+```
+
+The `users` and `messages` tables should exist in your Supabase database. An `avatars` storage bucket is required for storing profile images.
+
+## API endpoints
+
+- `GET /api/chat-history` – returns the latest chat messages from the database.
+- `POST /api/profile-image` – upload a profile picture for a user. Send `userId` in the request body and an `image` field containing the file.
+

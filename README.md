@@ -23,3 +23,22 @@ npm run build
 
 After building, the Express server can serve the compiled files from the `dist` directory.
 
+## Database configuration
+
+The server can persist data to a Supabase instance. Set the following environment
+variables before starting the server:
+
+```
+SUPABASE_URL=<your supabase url>
+SUPABASE_KEY=<your supabase anon key>
+```
+
+SQL definitions for the required tables can be found in `server/db/schema.sql`.
+
+## API
+
+Additional endpoints are available:
+
+- `GET /api/chat-history` – retrieve full chat history from the database.
+- `POST /api/users/:id/profile-image` – store a user's profile image (base64 string) in the database.
+

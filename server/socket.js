@@ -1,4 +1,6 @@
 import { Server } from 'socket.io';
+import { upsertUser } from './models/users.js';
+import { saveMessage } from './models/messages.js';
 
 // In-memory store for connected users and chat history
 const activeUsers = new Map();
@@ -16,13 +18,17 @@ export function setupSocket(server) {
   io.on('connection', socket => {
     console.log(`User connected: ${socket.id}`);
 
-    socket.on('user_join', userData => {
+    socket.on('user_join', async userData => {
       const user = {
         id: socket.id,
         username: userData.username || `User_${socket.id.slice(0, 6)}`,
         joinedAt: new Date().toISOString(),
       };
       activeUsers.set(socket.id, user);
+
+      // persist user to supabase
+      upsertUser({ id: user.id, username: user.username, joined_at: user.joinedAt })
+        .catch(err => console.error('Failed to save user', err));
 
       socket.emit('chat_history', chatHistory);
       io.emit('users_update', Array.from(activeUsers.values()));
@@ -37,7 +43,7 @@ export function setupSocket(server) {
       addToHistory(joinMessage);
     });
 
-    socket.on('send_message', messageData => {
+    socket.on('send_message', async messageData => {
       const user = activeUsers.get(socket.id);
       if (!user) return;
 
@@ -51,6 +57,14 @@ export function setupSocket(server) {
       };
       io.emit('new_message', message);
       addToHistory(message);
+
+      // persist message to supabase
+      saveMessage({
+        user_id: message.userId,
+        username: message.username,
+        content: message.content,
+        created_at: message.timestamp,
+      }).catch(err => console.error('Failed to save message', err));
     });
 
     socket.on('typing_start', () => {

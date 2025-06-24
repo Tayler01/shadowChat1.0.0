@@ -14,7 +14,8 @@
   "dependencies": {
     "express": "^4.18.2",
     "socket.io": "^4.7.4",
-    "cors": "^2.8.5"
+    "cors": "^2.8.5",
+    "socket.io-client": "^4.7.4"
   },
   "devDependencies": {
     "vite": "^5.4.2",

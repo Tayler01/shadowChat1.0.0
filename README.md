@@ -31,6 +31,7 @@ variables before starting the server:
 ```
 SUPABASE_URL=<your supabase url>
 SUPABASE_KEY=<your supabase anon key>
+CLIENT_ORIGIN=<origin allowed for websocket connections> # defaults to '*'
 ```
 
 SQL definitions for the required tables can be found in `server/db/schema.sql`.

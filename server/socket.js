@@ -1,6 +1,6 @@
 import { Server } from 'socket.io';
 import { upsertUser } from './models/users.js';
-import { saveMessage } from './models/messages.js';
+import { saveMessage, getChatHistory } from './models/messages.js';
 
 // In-memory store for connected users and chat history
 const activeUsers = new Map();
@@ -14,6 +14,9 @@ export function setupSocket(server) {
       methods: ['GET', 'POST'],
     },
   });
+
+  // Load existing chat history from the database on startup
+  loadInitialHistory();
 
   io.on('connection', socket => {
     console.log(`User connected: ${socket.id}`);
@@ -103,6 +106,25 @@ export function setupSocket(server) {
     chatHistory.push(message);
     if (chatHistory.length > MAX_HISTORY) {
       chatHistory.shift();
+    }
+  }
+
+  async function loadInitialHistory() {
+    try {
+      const history = await getChatHistory();
+      history.forEach(msg => {
+        const formatted = {
+          id: msg.id,
+          type: 'user',
+          content: msg.content,
+          username: msg.username,
+          userId: msg.user_id,
+          timestamp: msg.created_at,
+        };
+        addToHistory(formatted);
+      });
+    } catch (err) {
+      console.error('Failed to load chat history', err);
     }
   }
 }

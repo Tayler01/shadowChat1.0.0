@@ -93,6 +93,8 @@ class ShadowChat {
     this.socket.on('chat_history', (messages) => {
       this.clearWelcomeMessage();
       messages.forEach(message => this.displayMessage(message));
+      this.messageCount = messages.length;
+      this.messageCountEl.textContent = this.messageCount;
       this.scrollToBottom();
     });
 

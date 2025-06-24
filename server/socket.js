@@ -10,7 +10,7 @@ const MAX_HISTORY = 100;
 export function setupSocket(server) {
   const io = new Server(server, {
     cors: {
-      origin: 'http://localhost:5173',
+      origin: process.env.CLIENT_ORIGIN || '*',
       methods: ['GET', 'POST'],
     },
   });

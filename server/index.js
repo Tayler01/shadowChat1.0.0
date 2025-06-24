@@ -2,6 +2,8 @@ import express from 'express';
 import { createServer } from 'http';
 // The WebSocket logic is extracted to a separate module
 import { setupSocket, getStats } from './socket.js';
+import { getChatHistory } from './models/messages.js';
+import { updateProfileImage } from './models/users.js';
 import cors from 'cors';
 import path from 'path';
 import { fileURLToPath } from 'url';
@@ -37,6 +39,31 @@ app.get('/api/export-chat', (req, res) => {
     totalMessages: stats.messages,
     messages: stats.history
   });
+});
+
+// Fetch full chat history from database
+app.get('/api/chat-history', async (req, res) => {
+  try {
+    const history = await getChatHistory();
+    res.json(history);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// Store/update user profile image
+app.post('/api/users/:id/profile-image', async (req, res) => {
+  const { id } = req.params;
+  const { image } = req.body;
+  if (!image) {
+    return res.status(400).json({ error: 'Image data required' });
+  }
+  try {
+    await updateProfileImage(id, image);
+    res.json({ success: true });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
 });
 
 const PORT = process.env.PORT || 3001;

@@ -1,7 +1,7 @@
 {
   "name": "shadowchat",
   "version": "1.0.0",
-  "description": "A snappy fast chat platform that also works on air gaped computer systems",
+  "description": "A snappy fast chat platform powered by Supabase",
   "main": "server/index.js",
   "type": "module",
   "scripts": {

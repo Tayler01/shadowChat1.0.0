@@ -69,7 +69,7 @@ class ShadowChat {
   }
 
   connectToServer() {
-    // Connect to local server (air-gapped compatible)
+    // Connect to the chat server
     this.socket = io('http://localhost:3001', {
       transports: ['websocket', 'polling']
     });

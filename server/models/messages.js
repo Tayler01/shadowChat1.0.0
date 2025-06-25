@@ -2,7 +2,6 @@ import { supabaseFetch, isSupabaseConfigured } from '../config/supabase.js';
 
 export async function saveMessage(message) {
   if (!isSupabaseConfigured) {
-    console.log('Supabase not configured - message not persisted:', message);
     return null;
   }
   
@@ -19,7 +18,6 @@ export async function saveMessage(message) {
 
 export async function getChatHistory() {
   if (!isSupabaseConfigured) {
-    console.log('Supabase not configured - returning empty chat history');
     return [];
   }
   

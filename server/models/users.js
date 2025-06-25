@@ -2,7 +2,6 @@ import { supabaseFetch, isSupabaseConfigured } from '../config/supabase.js';
 
 export async function upsertUser(user) {
   if (!isSupabaseConfigured) {
-    console.log('Supabase not configured - user not persisted:', user);
     return null;
   }
   
@@ -20,7 +19,6 @@ export async function upsertUser(user) {
 
 export async function updateProfileImage(id, imageData) {
   if (!isSupabaseConfigured) {
-    console.log('Supabase not configured - profile image not updated');
     return null;
   }
   

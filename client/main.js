@@ -69,8 +69,10 @@ class ShadowChat {
   }
 
   connectToServer() {
-    // Connect to the chat server
-    this.socket = io('http://localhost:3001', {
+    // Connect to the chat server. Use the VITE_SOCKET_URL environment
+    // variable when provided, otherwise default to the current origin.
+    const url = import.meta.env.VITE_SOCKET_URL || window.location.origin;
+    this.socket = io(url, {
       transports: ['websocket', 'polling']
     });
 

@@ -6,15 +6,22 @@ dotenv.config();
 const SUPABASE_URL = process.env.SUPABASE_URL;
 const SUPABASE_KEY = process.env.SUPABASE_KEY;
 
-const isSupabaseConfigured = SUPABASE_URL && SUPABASE_KEY;
+const isSupabaseConfigured = SUPABASE_URL && 
+  SUPABASE_KEY && 
+  SUPABASE_URL !== 'your_supabase_url_here' && 
+  SUPABASE_KEY !== 'your_supabase_key_here';
 
-if (!SUPABASE_URL || !SUPABASE_KEY) {
-  console.warn('Supabase credentials are not configured');
+if (!isSupabaseConfigured) {
+  console.warn('Supabase credentials are not configured - running in memory-only mode');
 }
 
 export async function supabaseFetch(path, options = {}) {
   if (!isSupabaseConfigured) {
-    throw new Error('Supabase is not configured. Please set SUPABASE_URL and SUPABASE_KEY environment variables.');
+    // Return empty array for GET requests, null for others when Supabase is not configured
+    if (options.method === 'GET' || !options.method) {
+      return [];
+    }
+    return null;
   }
   
   const url = `${SUPABASE_URL}${path}`;
@@ -45,3 +52,5 @@ export async function supabaseFetch(path, options = {}) {
   
   return res.json();
 }
+
+export { isSupabaseConfigured };

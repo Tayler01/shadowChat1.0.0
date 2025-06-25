@@ -1,16 +1,36 @@
-import { supabaseFetch } from '../config/supabase.js';
+import { supabaseFetch, isSupabaseConfigured } from '../config/supabase.js';
 
 export async function upsertUser(user) {
-  return supabaseFetch('/rest/v1/users', {
-    method: 'POST',
-    headers: { Prefer: 'resolution=merge-duplicates' },
-    body: JSON.stringify(user)
-  });
+  if (!isSupabaseConfigured) {
+    console.log('Supabase not configured - user not persisted:', user);
+    return null;
+  }
+  
+  try {
+    return await supabaseFetch('/rest/v1/users', {
+      method: 'POST',
+      headers: { Prefer: 'resolution=merge-duplicates' },
+      body: JSON.stringify(user)
+    });
+  } catch (error) {
+    console.error('Failed to upsert user:', error);
+    return null;
+  }
 }
 
 export async function updateProfileImage(id, imageData) {
-  return supabaseFetch(`/rest/v1/users?id=eq.${id}`, {
-    method: 'PATCH',
-    body: JSON.stringify({ profile_image: imageData })
-  });
+  if (!isSupabaseConfigured) {
+    console.log('Supabase not configured - profile image not updated');
+    return null;
+  }
+  
+  try {
+    return await supabaseFetch(`/rest/v1/users?id=eq.${id}`, {
+      method: 'PATCH',
+      body: JSON.stringify({ profile_image: imageData })
+    });
+  } catch (error) {
+    console.error('Failed to update profile image:', error);
+    return null;
+  }
 }

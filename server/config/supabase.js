@@ -6,11 +6,17 @@ dotenv.config();
 const SUPABASE_URL = process.env.SUPABASE_URL;
 const SUPABASE_KEY = process.env.SUPABASE_KEY;
 
+const isSupabaseConfigured = SUPABASE_URL && SUPABASE_KEY;
+
 if (!SUPABASE_URL || !SUPABASE_KEY) {
   console.warn('Supabase credentials are not configured');
 }
 
 export async function supabaseFetch(path, options = {}) {
+  if (!isSupabaseConfigured) {
+    throw new Error('Supabase is not configured. Please set SUPABASE_URL and SUPABASE_KEY environment variables.');
+  }
+  
   const url = `${SUPABASE_URL}${path}`;
   const res = await fetch(url, {
     ...options,

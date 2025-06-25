@@ -25,5 +25,17 @@ export async function supabaseFetch(path, options = {}) {
     const text = await res.text();
     throw new Error(`Supabase request failed: ${text}`);
   }
+  
+  // Handle 204 No Content responses
+  if (res.status === 204) {
+    return null;
+  }
+  
+  // Check if response has content before parsing JSON
+  const contentLength = res.headers.get('content-length');
+  if (contentLength === '0') {
+    return null;
+  }
+  
   return res.json();
 }

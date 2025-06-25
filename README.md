@@ -32,7 +32,12 @@ variables before starting the server:
 SUPABASE_URL=<your supabase url>
 SUPABASE_KEY=<your supabase anon key>
 CLIENT_ORIGIN=<origin allowed for websocket connections> # defaults to '*'
+VITE_SOCKET_URL=<url for socket.io client>            # optional
 ```
+
+`VITE_SOCKET_URL` allows overriding the default WebSocket endpoint
+used by the front end. When omitted, the client connects to the same
+origin that served the page.
 
 SQL definitions for the required tables can be found in `server/db/schema.sql`.
 

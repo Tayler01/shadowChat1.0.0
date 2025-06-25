@@ -2,15 +2,10 @@ import 'dotenv/config';
 import express from 'express';
 import { createServer } from 'http';
 // The WebSocket logic is extracted to a separate module
-import { setupSocket, getStats } from './socket.js';
+import { setupSocket } from './socket.js';
 import { getChatHistory } from './models/messages.js';
 import { updateProfileImage } from './models/users.js';
 import cors from 'cors';
-import path from 'path';
-import { fileURLToPath } from 'url';
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
 
 const app = express();
 const server = createServer(app);
@@ -22,25 +17,6 @@ app.use(cors());
 app.use(express.json());
 
 
-// API endpoints for air-gapped functionality
-app.get('/api/health', (req, res) => {
-  const stats = getStats();
-  res.json({
-    status: 'online',
-    users: stats.users,
-    messages: stats.messages,
-    timestamp: new Date().toISOString()
-  });
-});
-
-app.get('/api/export-chat', (req, res) => {
-  const stats = getStats();
-  res.json({
-    exportedAt: new Date().toISOString(),
-    totalMessages: stats.messages,
-    messages: stats.history
-  });
-});
 
 // Fetch full chat history from database
 app.get('/api/chat-history', async (req, res) => {
@@ -72,5 +48,5 @@ const PORT = process.env.PORT || 3001;
 server.listen(PORT, () => {
   console.log(`🚀 ShadowChat server running on port ${PORT}`);
   console.log(`📡 WebSocket server ready for connections`);
-  console.log(`🔒 Air-gapped mode: All data stored in memory`);
+  console.log(`📦 Connected to Supabase for persistence`);
 });
